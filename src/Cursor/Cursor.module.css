@@ -1,0 +1,10 @@
+.cursor{
+      shape-outside:url(./cursor.svg);
+      position: absolute;
+      top:0;
+      left: 0;
+      transform: translateX(-30%);
+      width: 22px;
+      height: auto;
+      z-index: 9999;
+}
