@@ -1,16 +1,30 @@
 import * as React from 'react';
 import * as monaco from 'monaco-editor';
+import loader from '@monaco-editor/loader';
 
 export default class MonacoEditor extends React.Component {
       componentDidMount() {
             const { path, value, language, onValueChange, ...options } = this.props;
-            
-            const model = monaco.editor.createModel(value, language, path);
+            const that = this;
 
-            this._editor = monaco.editor.create(this._node, options);
-            this._editor.setModel(model);
-            this._subscription = model.onDidChangeContent(() => {
-                  this.props.onValueChange(model.getValue());
+            let proxy = URL.createObjectURL(new Blob([`
+                  self.MonacoEnvironment = {
+                        baseUrl: 'https://unpkg.com/monaco-editor@latest/min/'
+                  };
+                  importScripts('https://unpkg.com/monaco-editor@latest/min/vs/base/worker/workerMain.js');
+            `], { type: 'text/javascript' }));
+
+            window.MonacoEnvironment = { getWorkerUrl: () => proxy };
+
+            loader.config({ monaco });
+
+            loader.init().then(monaco => {
+                  const model = monaco.editor.createModel(value, language);
+                  that._editor = monaco.editor.create(this._node, options);
+                  that._editor.setModel(model);
+                  that._subscription = model.onDidChangeContent(() => {
+                        onValueChange(model.getValue());
+                  });
             });
       }
 
@@ -41,6 +55,6 @@ export default class MonacoEditor extends React.Component {
       }
 
       render() {
-            return <div style={{width:'100%',height:'100%'}} ref={c => this._node = c} />
+            return <div style={{ width: '100%', height: '100%' }} ref={c => this._node = c} />
       }
 }
