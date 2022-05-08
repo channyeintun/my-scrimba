@@ -5,7 +5,6 @@ import loader from '@monaco-editor/loader';
 export default class MonacoEditor extends React.Component {
       componentDidMount() {
             const { path, value, language, onValueChange, ...options } = this.props;
-            const that = this;
 
             let proxy = URL.createObjectURL(new Blob([`
                   self.MonacoEnvironment = {
@@ -15,16 +14,11 @@ export default class MonacoEditor extends React.Component {
             `], { type: 'text/javascript' }));
 
             window.MonacoEnvironment = { getWorkerUrl: () => proxy };
-
-            loader.config({ monaco });
-
-            loader.init().then(monaco => {
-                  const model = monaco.editor.createModel(value, language);
-                  that._editor = monaco.editor.create(this._node, options);
-                  that._editor.setModel(model);
-                  that._subscription = model.onDidChangeContent(() => {
-                        onValueChange(model.getValue());
-                  });
+            const model = monaco.editor.createModel(value, language);
+            this._editor = monaco.editor.create(this._node, options);
+            this._editor.setModel(model);
+            this._subscription = model.onDidChangeContent(() => {
+                  onValueChange(model.getValue());
             });
       }
 
