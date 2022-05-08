@@ -89,7 +89,6 @@ class App extends React.Component {
                                           value={
                                                 "hello world"
                                           }
-                                          path={monaco.Uri.file("test.js")}
                                           onValueChange={(v) => console.log(v)}
                                           minimap={{ enabled: false }}
                                           scrollBeyondLastLine={false}
