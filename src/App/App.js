@@ -3,7 +3,6 @@ import styles from './App.module.css';
 import { Cursor } from '../Cursor';
 import { Helper } from '../_helpers';
 import MonacoEditor from '../Monaco';
-import * as monaco from 'monaco-editor';
 
 class App extends React.Component {
       constructor(props) {
